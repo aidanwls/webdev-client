@@ -82,7 +82,7 @@ export default function Tables() {
       </table>
 
       <h4>My Fall 2026 Courses</h4>
-      <table border={1} width="100%">
+      <table border={1} width="100%" id="wd-your-table">
         <thead>
           <tr>
             <th>Quiz</th>
