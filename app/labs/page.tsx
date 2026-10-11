@@ -26,7 +26,7 @@ export default function Labs() {
         </li>
         <li>
           <a
-            href="https://github.com/jannunzi/webdev-client"
+            href="https://github.com/aidanwls/webdev-client"
             id="wd-github"
             target="_blank"
             rel="noreferrer"
