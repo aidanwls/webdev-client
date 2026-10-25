@@ -1,7 +1,7 @@
 export default function ForLoops() {
   let stringArray1 = ["string1", "string3"];
   let stringArray2: string[] = [];
-  let stringArray3: stringp[] = [];
+  let stringArray3: string[] = [];
   let stringLengths: number[] = [];
   for (let i = 0; i < stringArray1.length; i++) {
     const string1 = stringArray1[i];
