@@ -1,112 +1,45 @@
 "use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import "../../kambaz.css";
 
+const LINKS = [
+  { path: "home", id: "wd-course-home-link", label: "Home" },
+  { path: "modules", id: "wd-course-modules-link", label: "Modules" },
+  { path: "piazza", id: "wd-course-piazza-link", label: "Piazza" },
+  { path: "zoom", id: "wd-course-zoom-link", label: "Zoom" },
+  { path: "assignments", id: "wd-course-assignments-link", label: "Assignments" },
+  { path: "quizzes", id: "wd-course-quizzes-link", label: "Quizzes" },
+  { path: "grades", id: "wd-course-grades-link", label: "Grades" },
+  { path: "people/table", id: "wd-course-people-link", label: "People" },
+  { path: "announcements", id: "wd-course-announcements-link", label: "Announcements" },
+] as const;
+
 export default function CourseNavigation({ cid }: { cid: string }) {
   const pathname = usePathname() ?? "";
-  const home = `/courses/${cid}/home`;
-  const modules = `/courses/${cid}/modules`;
-  const piazza = `/courses/${cid}/piazza`;
-  const zoom = `/courses/${cid}/zoom`;
-  const assignments = `/courses/${cid}/assignments`;
-  const quizzes = `/courses/${cid}/quizzes`;
-  const grades = `/courses/${cid}/grades`;
-  const people = `/courses/${cid}/people/table`;
+  const inCourse = pathname.startsWith(`/courses/${cid}`);
 
   return (
     <div id="wd-courses-navigation" className="wd list-group rounded-none text-lg">
-      <Link
-        href={home}
-        id="wd-course-home-link"
-        className={
-          pathname === home
-            ? "list-group-item active border-0"
-            : "list-group-item border-0 text-red-600"
-        }
-      >
-        Home
-      </Link>
-      <Link
-        href={modules}
-        id="wd-course-modules-link"
-        className={
-          pathname === modules
-            ? "list-group-item active border-0"
-            : "list-group-item border-0 text-red-600"
-        }
-      >
-        Modules
-      </Link>
-      <Link
-        href={piazza}
-        id="wd-course-piazza-link"
-        className={
-          pathname === piazza
-            ? "list-group-item active border-0"
-            : "list-group-item border-0 text-red-600"
-        }
-      >
-        Piazza
-      </Link>
-            <Link
-        href={zoom}
-        id="wd-course-zoom-link"
-        className={
-          pathname === zoom
-            ? "list-group-item active border-0"
-            : "list-group-item border-0 text-red-600"
-        }
-      >
-        Zoom Meetings
-      </Link>
-      <Link
-        href={assignments}
-        id="wd-course-assignments-link"
-        className={
-          pathname === assignments || pathname.startsWith(assignments + "/")
-            ? "list-group-item active border-0"
-            : "list-group-item border-0 text-red-600"
-        }
-      >
-        Assignments
-      </Link>
-            <Link
-        href={quizzes}
-        id="wd-course-quizzes-link"
-        className={
-          pathname === quizzes
-            ? "list-group-item active border-0"
-            : "list-group-item border-0 text-red-600"
-        }
-      >
-        Quizzes
-      </Link>
-            <Link
-        href={grades}
-        id="wd-course-grades-link"
-        className={
-          pathname === grades
-            ? "list-group-item active border-0"
-            : "list-group-item border-0 text-red-600"
-        }
-      >
-        Grades
-      </Link>
-            <Link
-        href={people}
-        id="wd-course-people-link"
-        className={
-          pathname === people
-            ? "list-group-item active border-0"
-            : "list-group-item border-0 text-red-600"
-        }
-      >
-        People
-      </Link>
-      <Link href={home} id="wd-course-ai-link" className="list-group-item border-0 text-red-600">
-        Sample
-      </Link>
+      {LINKS.map(({ path, id, label }) => {
+        const href = `/courses/${cid}/${path}`;
+        const active = inCourse
+          ? pathname === href || (path !== "home" && pathname.startsWith(href))
+          : path === "home";
+        return (
+          <Link
+            key={id}
+            href={href}
+            id={id}
+            className={
+              active ? "list-group-item active border-0" : "list-group-item border-0 text-red-600"
+            }
+          >
+            {label}
+          </Link>
+        );
+      })}
     </div>
   );
 }
