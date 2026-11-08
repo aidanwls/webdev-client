@@ -8,26 +8,36 @@ import {
   type Course,
 } from "../store/coursesStore";
 import { useAccountContext } from "../account/AccountContext";
-import * as db from "../database";
+import { isEnrolled, useEnrollmentsStore } from "../store/enrollmentsStore";
 
 export default function Dashboard() {
   const { currentUser } = useAccountContext();
   const courses = useCoursesStore((state) => state.courses);
   const addCourse = useCoursesStore((state) => state.addCourse);
   const updateCourse = useCoursesStore((state) => state.updateCourse);
+  const enrollments = useEnrollmentsStore((state) => state.enrollments);
   const [course, setCourse] = useState<Course>(emptyCourse);
-  const visibleCourses = currentUser
-    ? courses.filter((c) =>
-        db.enrollments.some(
-          (enrollment) =>
-            enrollment.user === currentUser._id && enrollment.course === c._id,
-        ),
-      )
-    : courses;
+  const [showAll, setShowAll] = useState(false);
+  const visibleCourses =
+    currentUser && !showAll
+      ? courses.filter((c) => isEnrolled(enrollments, currentUser._id, c._id))
+      : courses;
 
   return (
     <div id="wd-dashboard">
-      <h1 id="wd-dashboard-title">Dashboard</h1>
+      <div className="flex items-center justify-between gap-2">
+        <h1 id="wd-dashboard-title">Dashboard</h1>
+        {currentUser && (
+          <button
+            type="button"
+            id="wd-enrollments-click"
+            className="rounded bg-blue-600 px-3 py-1.5 text-sm font-medium text-white"
+            onClick={() => setShowAll(!showAll)}
+          >
+            Enrollments
+          </button>
+        )}
+      </div>
       <hr />
       <h5 className="flex flex-wrap items-center gap-2">
         New Course

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useCoursesStore, type Course } from "../store/coursesStore";
+import { useAccountContext } from "../account/AccountContext";
+import { isEnrolled, useEnrollmentsStore } from "../store/enrollmentsStore";
 
 export default function CourseCard({
   course,
@@ -10,10 +12,19 @@ export default function CourseCard({
   onEdit: () => void;
 }) {
   const deleteCourse = useCoursesStore((state) => state.deleteCourse);
+  const { currentUser } = useAccountContext();
+  const enrollments = useEnrollmentsStore((state) => state.enrollments);
+  const enroll = useEnrollmentsStore((state) => state.enroll);
+  const unenroll = useEnrollmentsStore((state) => state.unenroll);
+  const enrolled =
+    !!currentUser && isEnrolled(enrollments, currentUser._id, course._id);
   return (
     <div className="wd-dashboard-course w-[300px] max-w-full overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm">
       <Link
         href={`/courses/${course._id}/home`}
+        onClick={(event) => {
+          if (!enrolled) event.preventDefault();
+        }}
         className="wd-dashboard-course-link block text-neutral-900 no-underline"
       >
         <Image
@@ -58,6 +69,32 @@ export default function CourseCard({
           >
             Delete
           </button>
+          {currentUser &&
+            (enrolled ? (
+              <button
+                type="button"
+                id="wd-unenroll-course-click"
+                className="ms-2 inline-flex items-center justify-center rounded bg-red-600 px-3 py-1.5 text-sm font-medium text-white"
+                onClick={(event) => {
+                  event.preventDefault();
+                  unenroll(currentUser._id, course._id);
+                }}
+              >
+                Unenroll
+              </button>
+            ) : (
+              <button
+                type="button"
+                id="wd-enroll-course-click"
+                className="ms-2 inline-flex items-center justify-center rounded bg-green-600 px-3 py-1.5 text-sm font-medium text-white"
+                onClick={(event) => {
+                  event.preventDefault();
+                  enroll(currentUser._id, course._id);
+                }}
+              >
+                Enroll
+              </button>
+            ))}
         </div>
       </Link>
     </div>
